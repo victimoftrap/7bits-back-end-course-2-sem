@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<web-app>
+    <servlet>
+        <servlet-name>singleTask</servlet-name>
+        <servlet-class>it.sevenbits.backend.servlets.SingleTaskManagerHttpServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>singleTask</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>severalTasks</servlet-name>
+        <servlet-class>it.sevenbits.backend.servlets.SeveralTasksManagerHttpServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>severalTasks</servlet-name>
+        <url-pattern>/tasks</url-pattern>
+    </servlet-mapping>
+</web-app>
