@@ -26,9 +26,30 @@ public class SingleTaskManagerHttpServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().write(String.format("{" +
-                                                    "  \"id\": %s," +
-                                                    "  \"name\": %s" +
-                                                    "}", taskId, task));
+        response.getWriter().write(String.format("{\n" +
+                "  \"id\": %s,\n" +
+                "  \"name\": %s\n" +
+                "}", taskId, task));
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        String taskId = request.getParameter("taskId");
+        if (taskId == null) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.getWriter().write("Task not found");
+            return;
+        }
+
+        String task = repository.removeTask(taskId);
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write(
+                String.format("{\n" +
+                        "  \"id\": %s\n" +
+                        "}", taskId));
     }
 }

@@ -26,4 +26,8 @@ public class TaskRepository {
     public String getTask(String id) {
         return tasks.get(id);
     }
+
+    public String removeTask(String id) {
+        return tasks.remove(id);
+    }
 }
