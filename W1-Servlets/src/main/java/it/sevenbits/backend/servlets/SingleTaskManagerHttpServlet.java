@@ -28,7 +28,7 @@ public class SingleTaskManagerHttpServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(String.format("{\n" +
                 "  \"id\": %s,\n" +
-                "  \"name\": %s\n" +
+                "  \"name\": \"%s\"\n" +
                 "}", taskId, task));
     }
 

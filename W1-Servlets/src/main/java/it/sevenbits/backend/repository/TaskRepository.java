@@ -1,6 +1,5 @@
 package it.sevenbits.backend.repository;
 
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
