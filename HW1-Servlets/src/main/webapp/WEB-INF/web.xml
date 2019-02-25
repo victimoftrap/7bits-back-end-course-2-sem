@@ -2,10 +2,28 @@
 <web-app>
     <servlet>
         <servlet-name>identify</servlet-name>
-        <servlet-class>it.sevenbits.backend.servlets.IdentificationServlet</servlet-class>
+        <servlet-class>it.sevenbits.backend.identification.servlets.IdentificationServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>identify</servlet-name>
         <url-pattern>/identify</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>singleTask</servlet-name>
+        <servlet-class>it.sevenbits.backend.servlets.SingleTaskManagerHttpServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>singleTask</servlet-name>
+        <url-pattern>/task</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>severalTasks</servlet-name>
+        <servlet-class>it.sevenbits.backend.servlets.SeveralTasksManagerHttpServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>severalTasks</servlet-name>
+        <url-pattern>/tasks</url-pattern>
     </servlet-mapping>
 </web-app>
