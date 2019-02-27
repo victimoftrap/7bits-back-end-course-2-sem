@@ -36,7 +36,6 @@ public class SingleTaskManagerHttpServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         String sessionId = request.getHeader("Authorization");
@@ -46,17 +45,23 @@ public class SingleTaskManagerHttpServlet extends HttpServlet {
         }
 
         String taskId = request.getParameter("taskId");
+        if (taskId == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No task ID");
+            return;
+        }
+
         Task task = repository.getTask(taskId);
         if (task == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Task not found");
             return;
         }
 
-        response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(String.format("{\n" +
                 "  \"id\": \"%s\",\n" +
                 "  \"name\": \"%s\"\n" +
                 "}", taskId, task.getName()));
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     /**
@@ -69,7 +74,6 @@ public class SingleTaskManagerHttpServlet extends HttpServlet {
      */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         String sessionId = request.getHeader("Authorization");
@@ -90,7 +94,8 @@ public class SingleTaskManagerHttpServlet extends HttpServlet {
             return;
         }
 
-        response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(String.format("{  \"id\": \"%s\"\n}", taskId));
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

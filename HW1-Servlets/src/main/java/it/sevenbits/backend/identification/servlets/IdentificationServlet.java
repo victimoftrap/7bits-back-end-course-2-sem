@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -37,16 +39,22 @@ public class IdentificationServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_CREATED);
+
+        String userName = request.getParameter("name");
+        if (userName == null || "".equals(userName)) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No user name");
+            return;
+        }
 
         String sessionId = UUID.randomUUID().toString();
-        String userName = request.getParameter("name");
         repository.addUser(sessionId, userName);
 
         Cookie cookie = new Cookie("sessionId", sessionId);
         response.addCookie(cookie);
+
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_CREATED);
     }
 
     /**
@@ -59,14 +67,21 @@ public class IdentificationServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        Cookie requestCookie = request.getCookies()[0];
-        if (!"sessionId".equals(requestCookie.getName())) {
+        if (request.getCookies() == null) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
+
+        Optional<Cookie> opt = Arrays.stream(request.getCookies())
+                .filter(monster -> "sessionId".equals(monster.getName()))
+                .findFirst();
+        if (!opt.isPresent()) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        Cookie requestCookie = opt.get();
 
         String userName = repository.getUser(requestCookie.getValue());
         if (userName == null) {
@@ -74,8 +89,9 @@ public class IdentificationServlet extends HttpServlet {
             return;
         }
 
-        response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(
                 String.format("<!DOCTYPE html><html><body><p>Current user is %s</p></body></html>", userName));
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
