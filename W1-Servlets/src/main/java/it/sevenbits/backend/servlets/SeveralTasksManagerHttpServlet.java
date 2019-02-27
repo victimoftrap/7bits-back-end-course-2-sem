@@ -38,11 +38,14 @@ public class SeveralTasksManagerHttpServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_CREATED);
 
         String taskName = request.getParameter("name");
+        if (taskName == null || "".equals(taskName)) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No task name");
+            return;
+        }
+
         String taskId = UUID.randomUUID().toString();
         Task task = new Task(taskId, taskName);
         repository.addTask(task);
@@ -51,6 +54,8 @@ public class SeveralTasksManagerHttpServlet extends HttpServlet {
                 "  \"id\": \"%s\",\n" +
                 "  \"name\": \"%s\"\n" +
                 "}", taskId, task.getName()));
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_CREATED);
         response.setHeader("id", taskId);
     }
 
@@ -64,9 +69,7 @@ public class SeveralTasksManagerHttpServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_OK);
 
         Iterator<Task> iterator = repository.iterator();
         StringBuilder json = new StringBuilder();
@@ -84,6 +87,8 @@ public class SeveralTasksManagerHttpServlet extends HttpServlet {
             }
         }
         json.append("]");
+        response.setContentType("application/json");
+        response.setStatus(HttpServletResponse.SC_OK);
         response.getWriter().write(json.toString());
     }
 }
