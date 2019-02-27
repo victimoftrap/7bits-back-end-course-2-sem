@@ -1,7 +1,7 @@
-package it.sevenbits.backend.tasks.servlets;
+package it.sevenbits.backend.servlets.tasks;
 
-import it.sevenbits.backend.tasks.repository.Task;
-import it.sevenbits.backend.tasks.repository.TaskRepository;
+import it.sevenbits.backend.repository.tasks.Task;
+import it.sevenbits.backend.repository.tasks.TaskRepository;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

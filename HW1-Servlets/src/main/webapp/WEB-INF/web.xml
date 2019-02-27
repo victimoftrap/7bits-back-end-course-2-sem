@@ -2,7 +2,7 @@
 <web-app>
     <servlet>
         <servlet-name>identify</servlet-name>
-        <servlet-class>it.sevenbits.backend.identification.servlets.IdentificationServlet</servlet-class>
+        <servlet-class>it.sevenbits.backend.servlets.identification.IdentificationServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>identify</servlet-name>

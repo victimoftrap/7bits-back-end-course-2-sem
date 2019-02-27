@@ -1,6 +1,6 @@
-package it.sevenbits.backend.identification.servlets;
+package it.sevenbits.backend.servlets.identification;
 
-import it.sevenbits.backend.identification.repository.SessionRepository;
+import it.sevenbits.backend.repository.identification.SessionRepository;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;

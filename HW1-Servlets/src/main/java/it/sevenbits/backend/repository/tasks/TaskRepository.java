@@ -1,4 +1,4 @@
-package it.sevenbits.backend.tasks.repository;
+package it.sevenbits.backend.repository.tasks;
 
 import java.util.HashMap;
 import java.util.Iterator;

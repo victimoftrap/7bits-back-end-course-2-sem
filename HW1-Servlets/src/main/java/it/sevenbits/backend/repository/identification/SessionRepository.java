@@ -1,4 +1,4 @@
-package it.sevenbits.backend.identification.repository;
+package it.sevenbits.backend.repository.identification;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
