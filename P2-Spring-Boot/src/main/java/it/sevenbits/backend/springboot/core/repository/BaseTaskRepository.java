@@ -2,10 +2,7 @@ package it.sevenbits.backend.springboot.core.repository;
 
 import it.sevenbits.backend.springboot.core.model.Task;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Basic implementation of TaskRepository
@@ -14,7 +11,7 @@ public class BaseTaskRepository implements TaskRepository {
     private List<Task> tasks;
 
     /**
-     * Create repositoryy
+     * Create repository
      */
     public BaseTaskRepository() {
         tasks = new ArrayList<>();
