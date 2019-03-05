@@ -1,5 +1,6 @@
 package it.sevenbits.backend.servlets.tasks;
 
+import it.sevenbits.backend.repository.identification.SessionRepository;
 import it.sevenbits.backend.repository.tasks.Task;
 import it.sevenbits.backend.repository.tasks.TaskRepository;
 
@@ -16,6 +17,7 @@ import java.util.UUID;
  */
 public class SeveralTasksManagerHttpServlet extends HttpServlet {
     private TaskRepository repository;
+    private SessionRepository sessions;
 
     /**
      * Get instance of task repository
@@ -26,6 +28,7 @@ public class SeveralTasksManagerHttpServlet extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         repository = TaskRepository.getInstance();
+        sessions = SessionRepository.getInstance();
     }
 
     /**
@@ -44,6 +47,9 @@ public class SeveralTasksManagerHttpServlet extends HttpServlet {
         if (sessionId == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized in service");
             return;
+        }
+        if (sessions.getUser(sessionId) == null) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
         }
 
         String taskName = request.getParameter("name");
@@ -79,8 +85,11 @@ public class SeveralTasksManagerHttpServlet extends HttpServlet {
 
         String sessionId = request.getHeader("Authorization");
         if (sessionId == null) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized in service");
             return;
+        }
+        if (sessions.getUser(sessionId) == null) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
         }
 
         Iterator<Task> iterator = repository.iterator();
