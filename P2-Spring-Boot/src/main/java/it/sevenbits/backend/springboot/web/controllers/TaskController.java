@@ -2,9 +2,14 @@ package it.sevenbits.backend.springboot.web.controllers;
 
 import it.sevenbits.backend.springboot.core.model.Task;
 import it.sevenbits.backend.springboot.core.repository.TaskRepository;
+
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -32,11 +37,13 @@ public class TaskController {
      *
      * @return list with tasks
      */
-    // @GetMapping
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<Task>> getAllTasks() {
-        return ResponseEntity.ok(repository.getAllTasks());
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .body(repository.getAllTasks());
     }
 
     /**
@@ -45,7 +52,6 @@ public class TaskController {
      * @param request request object with text for task
      * @return created task
      */
-    // @PostMapping
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<Task> createTask(@RequestBody Task request) {
@@ -63,6 +69,7 @@ public class TaskController {
 
         return ResponseEntity
                 .created(location)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .body(task);
     }
 }
