@@ -4,13 +4,11 @@ import it.sevenbits.backend.taskmanager.core.model.Task;
 import it.sevenbits.backend.taskmanager.core.repository.TaskRepository;
 
 import it.sevenbits.backend.taskmanager.web.model.AddTaskRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -40,11 +38,12 @@ public class TaskController {
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<List<Task>> getAllTasks() {
+    public ResponseEntity<List<Task>> getTasksByStatus(@RequestParam("status") String status) {
+        // TODO check if status are 'inbox' or 'done'
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(repository.getAllTasks());
+                .body(repository.getTasksBy(status));
     }
 
     /**
@@ -65,11 +64,28 @@ public class TaskController {
         URI location = UriComponentsBuilder
                 .fromPath("/tasks/")
                 .path(String.valueOf(task.getId()))
+                .queryParam("id", task.getId())
                 .build()
                 .toUri();
 
         return ResponseEntity
                 .created(location)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .body(task);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Task> getTaskById(@PathVariable("id") String id) {
+        // TODO check if ID isn't valid
+        Task task = repository.getTask(id);
+        if (task == null) {
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
+        return ResponseEntity
+                .ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .body(task);
     }

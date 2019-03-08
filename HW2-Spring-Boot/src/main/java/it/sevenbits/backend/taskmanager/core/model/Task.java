@@ -14,17 +14,6 @@ public class Task {
     private final String status;
 
     /**
-     * Create task with default status - "inbox"
-     *
-     * @param id   ID of a task
-     * @param text description of a task
-     */
-    @JsonCreator
-    public Task(@JsonProperty("id") final String id, @JsonProperty("task") final String text) {
-        this(id, text, "inbox");
-    }
-
-    /**
      * Create task
      *
      * @param id     ID of a task
