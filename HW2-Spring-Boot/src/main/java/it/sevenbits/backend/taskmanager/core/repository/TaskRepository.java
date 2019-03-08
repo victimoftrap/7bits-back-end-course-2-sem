@@ -40,7 +40,7 @@ public interface TaskRepository {
      * @param status some task status
      * @return list of a task
      */
-    List<Task> getTasksBy(final String status);
+    List<Task> getTasks(final String status);
 
     /**
      * Get all saved task
@@ -53,6 +53,15 @@ public interface TaskRepository {
      * Remove task from repository
      *
      * @param taskId ID of a task
+     * @return value associated with key
      */
-    void removeTask(final String taskId);
+    Task removeTask(final String taskId);
+
+    /**
+     * Update fields of a task
+     *
+     * @param taskId  ID of a task
+     * @param updated new task
+     */
+    void updateTask(final String taskId, final Task updated);
 }

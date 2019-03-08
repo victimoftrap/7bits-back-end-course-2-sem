@@ -4,7 +4,6 @@ import it.sevenbits.backend.taskmanager.core.model.Task;
 import it.sevenbits.backend.taskmanager.core.repository.TaskRepository;
 
 import it.sevenbits.backend.taskmanager.web.model.AddTaskRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -43,7 +42,7 @@ public class TaskController {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(repository.getTasksBy(status));
+                .body(repository.getTasks(status));
     }
 
     /**
@@ -74,10 +73,17 @@ public class TaskController {
                 .body(task);
     }
 
+    /**
+     * Get task by his ID
+     *
+     * @param id ID of a task
+     * @return requested task
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<Task> getTaskById(@PathVariable("id") String id) {
-        // TODO check if ID isn't valid
+        // TODO check if ID isn't UUID
+
         Task task = repository.getTask(id);
         if (task == null) {
             return ResponseEntity
@@ -88,5 +94,57 @@ public class TaskController {
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .body(task);
+    }
+
+    /**
+     * Update task
+     *
+     * @param id      ID of a task
+     * @param request task with updated values
+     * @return response code of operation
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<Void> updateTask(@PathVariable("id") String id, @RequestBody Task request) {
+        // TODO check if ID isn't UUID
+
+        Task task = repository.getTask(id);
+        if (task == null) {
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .build();
+        }
+
+        // TODO check fields of update request
+        Task updatedTask = new Task(id, request.getText(), request.getStatus());
+        repository.updateTask(id, updatedTask);
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .build();
+    }
+
+    /**
+     * Delete task
+     *
+     * @param id ID of a task
+     * @return response code of operation
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity<Void> deleteTask(@PathVariable("id") String id) {
+        // TODO check if ID isn't UUID
+
+        Task removed = repository.removeTask(id);
+        if (removed == null) {
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .build();
     }
 }

@@ -43,7 +43,7 @@ public class BaseTaskRepository implements TaskRepository {
     }
 
     @Override
-    public List<Task> getTasksBy(final String status) {
+    public List<Task> getTasks(final String status) {
         Map<String, Task> snapshot = new HashMap<>();
         for (String taskId : tasks.keySet()) {
             snapshot.put(taskId, tasks.get(taskId));
@@ -65,7 +65,12 @@ public class BaseTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void removeTask(final String taskId) {
-        tasks.remove(taskId);
+    public Task removeTask(final String taskId) {
+        return tasks.remove(taskId);
+    }
+
+    @Override
+    public void updateTask(String taskId, Task updated) {
+        tasks.putIfAbsent(taskId, updated);
     }
 }
