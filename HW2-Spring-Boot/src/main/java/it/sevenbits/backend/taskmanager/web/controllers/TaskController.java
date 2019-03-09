@@ -4,6 +4,7 @@ import it.sevenbits.backend.taskmanager.core.model.Task;
 import it.sevenbits.backend.taskmanager.core.repository.TaskRepository;
 
 import it.sevenbits.backend.taskmanager.web.model.AddTaskRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Class-mediator that would return data from repository to user
@@ -26,7 +28,7 @@ public class TaskController {
      *
      * @param repository repository for tasks
      */
-    public TaskController(TaskRepository repository) {
+    public TaskController(final TaskRepository repository) {
         this.repository = repository;
     }
 
@@ -37,8 +39,20 @@ public class TaskController {
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<List<Task>> getTasksByStatus(@RequestParam("status") String status) {
-        // TODO check if status are 'inbox' or 'done'
+    public ResponseEntity<List<Task>> getTasksByStatus(@RequestParam("status") final String status) {
+        if (status == null || "".equals(status)) {
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .build();
+        }
+        if (!"inbox".equals(status) && !"done".equals(status)) {
+            return ResponseEntity
+                    .status(HttpStatus.METHOD_NOT_ALLOWED)
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .build();
+        }
+
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -53,7 +67,7 @@ public class TaskController {
      */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Task> createTask(@RequestBody AddTaskRequest request) {
+    public ResponseEntity<Task> createTask(@RequestBody final AddTaskRequest request) {
         if (request == null || request.getText() == null || "".equals(request.getText())) {
             return ResponseEntity
                     .badRequest()
@@ -74,6 +88,24 @@ public class TaskController {
     }
 
     /**
+     * Check that ID is valid
+     *
+     * @param id requested ID
+     * @return true if ID valid
+     */
+    private boolean isIdValid(final String id) {
+        if (id == null) {
+            return false;
+        }
+        try {
+            UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Get task by his ID
      *
      * @param id ID of a task
@@ -81,8 +113,13 @@ public class TaskController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<Task> getTaskById(@PathVariable("id") String id) {
-        // TODO check if ID isn't UUID
+    public ResponseEntity<Task> getTaskById(@PathVariable("id") final String id) {
+        if (!isIdValid(id)) {
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .build();
+        }
 
         Task task = repository.getTask(id);
         if (task == null) {
@@ -105,18 +142,34 @@ public class TaskController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseBody
-    public ResponseEntity<Void> updateTask(@PathVariable("id") String id, @RequestBody Task request) {
-        // TODO check if ID isn't UUID
+    public ResponseEntity<Void> updateTask(@PathVariable("id") final String id, @RequestBody final Task request) {
+        if (!isIdValid(id)) {
+            return ResponseEntity
+                    .badRequest()
+                    .build();
+        }
 
         Task task = repository.getTask(id);
         if (task == null) {
             return ResponseEntity
-                    .badRequest()
+                    .notFound()
+                    .build();
+        }
+
+        if (request.getText() == null || "".equals(request.getText()) ||
+                request.getStatus() == null || "".equals(request.getStatus())) {
+            return  ResponseEntity
+                    .status(HttpStatus.METHOD_NOT_ALLOWED)
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .build();
+        }
+        if (!"inbox".equals(request.getStatus()) && !"done".equals(request.getStatus())) {
+            return ResponseEntity
+                    .status(HttpStatus.METHOD_NOT_ALLOWED)
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .build();
         }
 
-        // TODO check fields of update request
         Task updatedTask = new Task(id, request.getText(), request.getStatus());
         repository.updateTask(id, updatedTask);
         return ResponseEntity
@@ -133,8 +186,13 @@ public class TaskController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public ResponseEntity<Void> deleteTask(@PathVariable("id") String id) {
-        // TODO check if ID isn't UUID
+    public ResponseEntity<Void> deleteTask(@PathVariable("id") final String id) {
+        if (!isIdValid(id)) {
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .build();
+        }
 
         Task removed = repository.removeTask(id);
         if (removed == null) {

@@ -71,6 +71,6 @@ public class BaseTaskRepository implements TaskRepository {
 
     @Override
     public void updateTask(String taskId, Task updated) {
-        tasks.putIfAbsent(taskId, updated);
+        tasks.replace(taskId, updated);
     }
 }
