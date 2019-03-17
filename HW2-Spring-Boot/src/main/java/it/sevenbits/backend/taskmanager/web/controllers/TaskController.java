@@ -40,7 +40,9 @@ public class TaskController {
     /**
      * Get all user's tasks
      *
-     * @return list with tasks
+     * @param status status of needed tasks
+     * @return list with tasks or empty list
+     * * Code 200 - successful operation, all tasks returned
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
@@ -55,16 +57,19 @@ public class TaskController {
      * Create new task
      *
      * @param request request object with text for task
-     * @return created task
+     * @return status code of operation
+     * * Code 201 - task created;
+     * * Code 400 - request invalid or request text are empty
      */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Task> createTask(@RequestBody final AddTaskRequest request) {
+    public ResponseEntity<Void> createTask(@RequestBody final AddTaskRequest request) {
         if (request == null || request.getText() == null || "".equals(request.getText())) {
             return ResponseEntity
                     .badRequest()
                     .build();
         }
+
         Task task = repository.createTask(request.getText(), "inbox");
         URI location = UriComponentsBuilder
                 .fromPath("/tasks/")
@@ -76,7 +81,7 @@ public class TaskController {
         return ResponseEntity
                 .created(location)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(task);
+                .build();
     }
 
     /**
@@ -84,6 +89,8 @@ public class TaskController {
      *
      * @param id ID of a task
      * @return requested task
+     * * Code 200 - successful operation;
+     * * Code 404 - task by ID not found
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
@@ -113,6 +120,9 @@ public class TaskController {
      * @param id      ID of a task
      * @param request task with updated values
      * @return response code of operation
+     * * Code 200 - successful operation;
+     * * Code 400 - validation exception;
+     * * Code 404 - task by ID not found.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     @ResponseBody
@@ -144,6 +154,8 @@ public class TaskController {
      *
      * @param id ID of a task
      * @return response code of operation
+     * * Code 200 - successful operation;
+     * * Code 404 - task by ID not found.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody

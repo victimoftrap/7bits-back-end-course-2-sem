@@ -16,7 +16,7 @@ public class IdValidationService implements Verifiable<String> {
     }
 
     @Override
-    public boolean verify(final String param) {
-        return pattern.matcher(param).matches();
+    public boolean verify(final String taskId) {
+        return pattern.matcher(taskId).matches();
     }
 }
