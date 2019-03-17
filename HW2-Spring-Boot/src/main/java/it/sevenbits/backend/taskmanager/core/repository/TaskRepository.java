@@ -1,7 +1,6 @@
 package it.sevenbits.backend.taskmanager.core.repository;
 
 import it.sevenbits.backend.taskmanager.core.model.Task;
-import it.sevenbits.backend.taskmanager.web.model.AddTaskRequest;
 
 import java.util.List;
 
@@ -10,21 +9,13 @@ import java.util.List;
  */
 public interface TaskRepository {
     /**
-     * Create new task
-     *
-     * @param request request with data for task
-     * @return created task
-     */
-    Task createTask(final AddTaskRequest request);
-
-    /**
      * Create new task with some status
      *
-     * @param request request with data for task
-     * @param status  some status for a task
+     * @param text   text of a task
+     * @param status some status for a task
      * @return created task
      */
-    Task createTask(final AddTaskRequest request, final String status);
+    Task createTask(final String text, final String status);
 
     /**
      * Get task by his ID
@@ -41,13 +32,6 @@ public interface TaskRepository {
      * @return list of a task
      */
     List<Task> getTasks(final String status);
-
-    /**
-     * Get all saved task
-     *
-     * @return list of a tasks
-     */
-    List<Task> getAllTasks();
 
     /**
      * Remove task from repository

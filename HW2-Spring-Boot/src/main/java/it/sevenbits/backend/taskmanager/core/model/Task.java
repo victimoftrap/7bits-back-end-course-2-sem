@@ -21,7 +21,8 @@ public class Task {
      * @param status status of a task
      */
     @JsonCreator
-    public Task(@JsonProperty("id") final String id, @JsonProperty("text") final String text,
+    public Task(@JsonProperty("id") final String id,
+                @JsonProperty("text") final String text,
                 @JsonProperty("status") final String status) {
         this.id = id;
         this.text = text;

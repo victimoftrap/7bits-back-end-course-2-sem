@@ -2,9 +2,9 @@ package it.sevenbits.backend.taskmanager.web.controllers;
 
 import it.sevenbits.backend.taskmanager.core.model.Task;
 import it.sevenbits.backend.taskmanager.core.repository.TaskRepository;
+import it.sevenbits.backend.taskmanager.core.service.IdValidationService;
 import it.sevenbits.backend.taskmanager.web.model.AddTaskRequest;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,7 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Class-mediator that would return data from repository to user
@@ -27,6 +26,7 @@ import java.util.UUID;
 @RequestMapping("/tasks")
 public class TaskController {
     private final TaskRepository repository;
+    private IdValidationService idValidation = new IdValidationService();
 
     /**
      * Create controller by some repository
@@ -45,19 +45,6 @@ public class TaskController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<Task>> getTasksByStatus(@RequestParam("status") final String status) {
-        if (status == null || "".equals(status)) {
-            return ResponseEntity
-                    .badRequest()
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .build();
-        }
-        if (!"inbox".equals(status) && !"done".equals(status)) {
-            return ResponseEntity
-                    .status(HttpStatus.METHOD_NOT_ALLOWED)
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .build();
-        }
-
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -78,7 +65,7 @@ public class TaskController {
                     .badRequest()
                     .build();
         }
-        Task task = repository.createTask(request);
+        Task task = repository.createTask(request.getText(), "inbox");
         URI location = UriComponentsBuilder
                 .fromPath("/tasks/")
                 .path(String.valueOf(task.getId()))
@@ -93,24 +80,6 @@ public class TaskController {
     }
 
     /**
-     * Check that ID is valid
-     *
-     * @param id requested ID
-     * @return true if ID valid
-     */
-    private boolean isIdValid(final String id) {
-        if (id == null) {
-            return false;
-        }
-        try {
-            UUID.fromString(id);
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * Get task by his ID
      *
      * @param id ID of a task
@@ -119,7 +88,7 @@ public class TaskController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<Task> getTaskById(@PathVariable("id") final String id) {
-        if (!isIdValid(id)) {
+        if (!idValidation.verify(id)) {
             return ResponseEntity
                     .badRequest()
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -145,12 +114,13 @@ public class TaskController {
      * @param request task with updated values
      * @return response code of operation
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     @ResponseBody
     public ResponseEntity<Void> updateTask(@PathVariable("id") final String id, @RequestBody final Task request) {
-        if (!isIdValid(id)) {
+        if (!idValidation.verify(id)) {
             return ResponseEntity
                     .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .build();
         }
 
@@ -158,20 +128,6 @@ public class TaskController {
         if (task == null) {
             return ResponseEntity
                     .notFound()
-                    .build();
-        }
-
-        if (request.getText() == null || "".equals(request.getText()) ||
-                request.getStatus() == null || "".equals(request.getStatus())) {
-            return  ResponseEntity
-                    .status(HttpStatus.METHOD_NOT_ALLOWED)
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .build();
-        }
-        if (!"inbox".equals(request.getStatus()) && !"done".equals(request.getStatus())) {
-            return ResponseEntity
-                    .status(HttpStatus.METHOD_NOT_ALLOWED)
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .build();
         }
 
@@ -192,7 +148,7 @@ public class TaskController {
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity<Void> deleteTask(@PathVariable("id") final String id) {
-        if (!isIdValid(id)) {
+        if (!idValidation.verify(id)) {
             return ResponseEntity
                     .badRequest()
                     .contentType(MediaType.APPLICATION_JSON_UTF8)

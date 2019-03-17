@@ -1,7 +1,6 @@
 package it.sevenbits.backend.taskmanager.core.repository;
 
 import it.sevenbits.backend.taskmanager.core.model.Task;
-import it.sevenbits.backend.taskmanager.web.model.AddTaskRequest;
 
 import java.util.UUID;
 import java.util.Map;
@@ -9,31 +8,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Basic implementation of TaskRepository
  */
 public class BaseTaskRepository implements TaskRepository {
-    private ConcurrentMap<String, Task> tasks;
-    private String DEFAULT_STATUS = "inbox";
+    private Map<String, Task> tasks;
 
     /**
      * Create repository
+     *
+     * @param tasksContainer some map container for tasks
      */
-    public BaseTaskRepository() {
-        tasks = new ConcurrentHashMap<>();
+    public BaseTaskRepository(final Map<String, Task> tasksContainer) {
+        tasks = tasksContainer;
     }
 
     @Override
-    public Task createTask(final AddTaskRequest request) {
-        return this.createTask(request, DEFAULT_STATUS);
-    }
-
-    @Override
-    public Task createTask(final AddTaskRequest request, String status) {
-        Task newTask = new Task(UUID.randomUUID().toString(), request.getText(), status);
+    public Task createTask(final String text, String status) {
+        Task newTask = new Task(UUID.randomUUID().toString(), text, status);
         tasks.putIfAbsent(newTask.getId(), newTask);
         return newTask;
     }
@@ -57,11 +50,6 @@ public class BaseTaskRepository implements TaskRepository {
             }
         }
         return Collections.unmodifiableList(result);
-    }
-
-    @Override
-    public List<Task> getAllTasks() {
-        return Collections.unmodifiableList(new ArrayList<>(tasks.values()));
     }
 
     @Override

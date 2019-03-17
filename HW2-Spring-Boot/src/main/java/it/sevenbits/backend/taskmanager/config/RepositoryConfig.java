@@ -6,6 +6,8 @@ import it.sevenbits.backend.taskmanager.core.repository.BaseTaskRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Configuration of repository for Spring
  */
@@ -18,6 +20,6 @@ public class RepositoryConfig {
      */
     @Bean
     public TaskRepository taskRepository() {
-        return new BaseTaskRepository();
+        return new BaseTaskRepository(new ConcurrentHashMap<>());
     }
 }
