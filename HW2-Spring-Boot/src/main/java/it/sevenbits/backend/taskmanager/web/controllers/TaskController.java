@@ -141,7 +141,9 @@ public class TaskController {
                     .build();
         }
 
-        Task updatedTask = new Task(id, request.getText(), request.getStatus());
+        String updatedText = request.getText() == null ? request.getText() : task.getText();
+        String updatedStatus = request.getStatus() == null ? request.getStatus() : task.getStatus();
+        Task updatedTask = new Task(id, updatedText, updatedStatus);
         repository.updateTask(id, updatedTask);
         return ResponseEntity
                 .ok()
