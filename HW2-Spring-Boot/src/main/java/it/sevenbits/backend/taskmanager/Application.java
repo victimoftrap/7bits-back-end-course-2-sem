@@ -7,13 +7,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Class for running Spring application
  */
 @SpringBootApplication
-public class Application {
+public final class Application {
+    private Application() {
+    }
+
     /**
      * Run task web application
      *
      * @param args command line params
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
     }
 }

@@ -31,9 +31,13 @@ public class AddTaskRequest {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         AddTaskRequest that = (AddTaskRequest) o;
         return Objects.equals(text, that.text);
     }

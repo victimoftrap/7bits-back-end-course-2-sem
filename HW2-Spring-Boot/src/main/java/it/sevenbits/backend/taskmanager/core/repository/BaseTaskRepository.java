@@ -25,12 +25,13 @@ public class BaseTaskRepository implements TaskRepository {
     }
 
     @Override
-    public Task createTask(final String text, String status) {
+    public Task createTask(final String text, final String status) {
         Task newTask = new Task(UUID.randomUUID().toString(), text, status);
         tasks.putIfAbsent(newTask.getId(), newTask);
         return newTask;
     }
 
+    @Override
     public Task getTask(final String taskId) {
         return tasks.get(taskId);
     }
@@ -58,7 +59,7 @@ public class BaseTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void updateTask(String taskId, Task updated) {
+    public void updateTask(final String taskId, final Task updated) {
         tasks.replace(taskId, updated);
     }
 }

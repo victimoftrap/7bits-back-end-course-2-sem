@@ -15,7 +15,7 @@ public interface TaskRepository {
      * @param status some status for a task
      * @return created task
      */
-    Task createTask(final String text, final String status);
+    Task createTask(String text, String status);
 
     /**
      * Get task by his ID
@@ -23,7 +23,7 @@ public interface TaskRepository {
      * @param taskId ID of a task
      * @return task from repository
      */
-    Task getTask(final String taskId);
+    Task getTask(String taskId);
 
     /**
      * Get all tasks by some status
@@ -31,7 +31,7 @@ public interface TaskRepository {
      * @param status some task status
      * @return list of a task
      */
-    List<Task> getTasks(final String status);
+    List<Task> getTasks(String status);
 
     /**
      * Remove task from repository
@@ -39,7 +39,7 @@ public interface TaskRepository {
      * @param taskId ID of a task
      * @return value associated with key
      */
-    Task removeTask(final String taskId);
+    Task removeTask(String taskId);
 
     /**
      * Update fields of a task
@@ -47,5 +47,5 @@ public interface TaskRepository {
      * @param taskId  ID of a task
      * @param updated new task
      */
-    void updateTask(final String taskId, final Task updated);
+    void updateTask(String taskId, Task updated);
 }

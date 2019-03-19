@@ -16,7 +16,7 @@ public class StatusValidationService implements Verifiable<String> {
     }
 
     @Override
-    public boolean verify(String status) {
+    public boolean verify(final String status) {
         return pattern.matcher(status).matches();
     }
 }
