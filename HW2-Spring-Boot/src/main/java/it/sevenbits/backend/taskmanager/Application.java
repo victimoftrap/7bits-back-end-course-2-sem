@@ -7,10 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Class for running Spring application
  */
 @SpringBootApplication
-public final class Application {
-    private Application() {
-    }
-
+public class Application {
     /**
      * Run task web application
      *

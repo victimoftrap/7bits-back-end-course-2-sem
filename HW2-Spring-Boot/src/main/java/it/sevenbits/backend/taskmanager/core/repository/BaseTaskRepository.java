@@ -2,12 +2,7 @@ package it.sevenbits.backend.taskmanager.core.repository;
 
 import it.sevenbits.backend.taskmanager.core.model.Task;
 
-import java.util.UUID;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Basic implementation of TaskRepository
@@ -38,14 +33,9 @@ public class BaseTaskRepository implements TaskRepository {
 
     @Override
     public List<Task> getTasks(final String status) {
-        Map<String, Task> snapshot = new HashMap<>();
-        for (String taskId : tasks.keySet()) {
-            snapshot.put(taskId, tasks.get(taskId));
-        }
-
         List<Task> result = new ArrayList<>();
-        for (String taskId : snapshot.keySet()) {
-            Task task = snapshot.get(taskId);
+        for (Map.Entry<String, Task> stringTaskEntry : tasks.entrySet()) {
+            Task task = stringTaskEntry.getValue();
             if (task.getStatus().equals(status)) {
                 result.add(task);
             }

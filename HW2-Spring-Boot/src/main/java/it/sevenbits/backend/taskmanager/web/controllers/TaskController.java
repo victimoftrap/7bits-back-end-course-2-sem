@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -46,7 +47,13 @@ public class TaskController {
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<List<Task>> getTasksByStatus(@RequestParam("status") final String status) {
+    public ResponseEntity<List<Task>> getTasksByStatus(
+            @RequestParam(
+                    value = "status",
+                    required = false,
+                    defaultValue = "inbox"
+            ) final String status) {
+
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -61,122 +68,23 @@ public class TaskController {
      * * Code 201 - task created;
      * * Code 400 - request invalid or request text are empty
      */
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(
+            method = RequestMethod.POST,
+            headers = "content-type=application/json",
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    )
     @ResponseBody
-    public ResponseEntity<Void> createTask(@RequestBody final AddTaskRequest request) {
-        if (request == null || request.getText() == null || "".equals(request.getText())) {
-            return ResponseEntity
-                    .badRequest()
-                    .build();
-        }
-
+    public ResponseEntity<Void> createTask(@RequestBody @Valid final AddTaskRequest request) {
         Task task = repository.createTask(request.getText(), "inbox");
         URI location = UriComponentsBuilder
                 .fromPath("/tasks/")
-                .path(String.valueOf(task.getId()))
-                .queryParam("id", task.getId())
+                .path(task.getId())
                 .build()
                 .toUri();
 
         return ResponseEntity
                 .created(location)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .build();
-    }
-
-    /**
-     * Get task by his ID
-     *
-     * @param id ID of a task
-     * @return requested task
-     * * Code 200 - successful operation;
-     * * Code 404 - task by ID not found
-     */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<Task> getTaskById(@PathVariable("id") final String id) {
-        if (!idValidation.verify(id)) {
-            return ResponseEntity
-                    .badRequest()
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .build();
-        }
-
-        Task task = repository.getTask(id);
-        if (task == null) {
-            return ResponseEntity
-                    .notFound()
-                    .build();
-        }
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(task);
-    }
-
-    /**
-     * Update task
-     *
-     * @param id      ID of a task
-     * @param request task with updated values
-     * @return response code of operation
-     * * Code 200 - successful operation;
-     * * Code 400 - validation exception;
-     * * Code 404 - task by ID not found.
-     */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    @ResponseBody
-    public ResponseEntity<Void> updateTask(@PathVariable("id") final String id, @RequestBody final Task request) {
-        if (!idValidation.verify(id)) {
-            return ResponseEntity
-                    .badRequest()
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .build();
-        }
-
-        Task task = repository.getTask(id);
-        if (task == null) {
-            return ResponseEntity
-                    .notFound()
-                    .build();
-        }
-
-        String updatedText = request.getText() == null ? request.getText() : task.getText();
-        String updatedStatus = request.getStatus() == null ? request.getStatus() : task.getStatus();
-        Task updatedTask = new Task(id, updatedText, updatedStatus);
-        repository.updateTask(id, updatedTask);
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .build();
-    }
-
-    /**
-     * Delete task
-     *
-     * @param id ID of a task
-     * @return response code of operation
-     * * Code 200 - successful operation;
-     * * Code 404 - task by ID not found.
-     */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public ResponseEntity<Void> deleteTask(@PathVariable("id") final String id) {
-        if (!idValidation.verify(id)) {
-            return ResponseEntity
-                    .badRequest()
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .build();
-        }
-
-        Task removed = repository.removeTask(id);
-        if (removed == null) {
-            return ResponseEntity
-                    .notFound()
-                    .build();
-        }
-        return ResponseEntity
-                .ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .build();
     }

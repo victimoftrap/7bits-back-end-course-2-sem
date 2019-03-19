@@ -3,12 +3,14 @@ package it.sevenbits.backend.taskmanager.web.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 /**
  * Class-DTO for adding task in repository
  */
 public class AddTaskRequest {
+    @NotBlank
     private final String text;
 
     /**

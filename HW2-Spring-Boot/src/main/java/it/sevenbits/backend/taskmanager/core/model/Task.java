@@ -3,14 +3,20 @@ package it.sevenbits.backend.taskmanager.core.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 /**
  * Class for user's task
  */
 public class Task {
+    @NotBlank
     private final String id;
+
+    @NotBlank
     private final String text;
+
+    @NotBlank
     private final String status;
 
     /**

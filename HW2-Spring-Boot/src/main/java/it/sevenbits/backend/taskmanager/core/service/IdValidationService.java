@@ -12,7 +12,7 @@ public class IdValidationService implements Verifiable<String> {
      * Create validator
      */
     public IdValidationService() {
-        pattern = Pattern.compile("^([a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{11})$");
+        pattern = Pattern.compile("^([a-fA-F0-9]{8}(-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12})$");
     }
 
     @Override
