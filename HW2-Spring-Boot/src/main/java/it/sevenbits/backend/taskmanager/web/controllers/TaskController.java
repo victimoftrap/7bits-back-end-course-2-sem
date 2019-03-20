@@ -2,10 +2,10 @@ package it.sevenbits.backend.taskmanager.web.controllers;
 
 import it.sevenbits.backend.taskmanager.core.model.Task;
 import it.sevenbits.backend.taskmanager.core.repository.TaskRepository;
-import it.sevenbits.backend.taskmanager.core.service.IdValidationService;
 import it.sevenbits.backend.taskmanager.web.model.AddTaskRequest;
-
 import it.sevenbits.backend.taskmanager.web.model.UpdateTaskRequest;
+import it.sevenbits.backend.taskmanager.core.service.validation.IdValidationService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package it.sevenbits.backend.taskmanager.core.service;
+package it.sevenbits.backend.taskmanager.core.service.validation;
 
 /**
  * Interface for verifying something

@@ -2,21 +2,25 @@ package it.sevenbits.backend.taskmanager.core.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.validation.constraints.NotBlank;
+
+import it.sevenbits.backend.taskmanager.core.service.validation.annotations.id.ValidID;
+import it.sevenbits.backend.taskmanager.core.service.validation.annotations.status.SupportedStatus;
+
 import java.util.Objects;
 
 /**
  * Class for user's task
  */
 public class Task {
-    @NotBlank
+    @ValidID
     private final String id;
 
     @NotBlank
     private final String text;
 
     @NotBlank
+    @SupportedStatus
     private final String status;
 
     /**

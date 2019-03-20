@@ -2,6 +2,7 @@ package it.sevenbits.backend.taskmanager.web.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import it.sevenbits.backend.taskmanager.core.service.validation.annotations.status.SupportedStatus;
 
 import java.util.Objects;
 
@@ -10,6 +11,8 @@ import java.util.Objects;
  */
 public class UpdateTaskRequest {
     private String text;
+
+    @SupportedStatus
     private String status;
 
     /**
