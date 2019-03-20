@@ -5,6 +5,7 @@ import it.sevenbits.backend.taskmanager.core.repository.TaskRepository;
 import it.sevenbits.backend.taskmanager.core.service.IdValidationService;
 import it.sevenbits.backend.taskmanager.web.model.AddTaskRequest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -85,6 +86,138 @@ public class TaskController {
 
         return ResponseEntity
                 .created(location)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .build();
+    }
+
+    /**
+     * Choose text value for updated task
+     *
+     * @param upd request data
+     * @param old previous task value
+     * @return new text for task
+     */
+    private String updateTaskText(final Task upd, final Task old) {
+        return upd.getText() == null ? old.getText() : upd.getText();
+    }
+
+    /**
+     * Choose status value for updated task
+     *
+     * @param upd request data
+     * @param old previous task value
+     * @return new status for task
+     */
+    private String updateTaskStatus(final Task upd, final Task old) {
+        return upd.getStatus() == null ? old.getStatus() : upd.getStatus();
+    }
+
+    /**
+     * Get task by his ID
+     *
+     * @param id ID of a task
+     * @return requested task
+     * * Code 200 - successful operation;
+     * * Code 404 - task by ID not found
+     */
+    @RequestMapping(
+            value = "/{id}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public ResponseEntity<Task> getTasksById(@PathVariable(value = "id") final String id) {
+        if (!idValidation.verify(id)) {
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .build();
+        }
+
+        Task task = repository.getTask(id);
+        if (task == null) {
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .body(task);
+    }
+
+    /**
+     * Update task
+     *
+     * @param id      ID of a task
+     * @param request task with updated values
+     * @return response code of operation
+     * * Code 204 - successful operation;
+     * * Code 400 - validation exception;
+     * * Code 404 - task by ID not found.
+     */
+    @RequestMapping(
+            value = "/{id",
+            method = RequestMethod.PATCH
+    )
+    @ResponseBody
+    public ResponseEntity<Void> updateTask(@PathVariable(value = "id") final String id,
+                                           @RequestBody @Valid final Task request) {
+        if (!idValidation.verify(id)) {
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .build();
+        }
+
+        Task oldTask = repository.getTask(id);
+        if (oldTask == null) {
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
+
+        String updText = updateTaskText(request, oldTask);
+        String updStatus = updateTaskStatus(request, oldTask);
+        Task updated = new Task(oldTask.getId(), updText, updStatus);
+        repository.updateTask(updated.getId(), updated);
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .build();
+    }
+
+    /**
+     * Delete task
+     *
+     * @param id ID of a task
+     * @return response code of operation
+     * * Code 200 - successful operation;
+     * * Code 404 - task by ID not found.
+     */
+    @RequestMapping(
+            value = "/{id}",
+            method = RequestMethod.DELETE
+    )
+    @ResponseBody
+    public ResponseEntity<Void> deleteTask(@PathVariable(value = "id") final String id) {
+        if (!idValidation.verify(id)) {
+            return ResponseEntity
+                    .badRequest()
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .build();
+        }
+
+        Task removed = repository.removeTask(id);
+        if (removed == null) {
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
+
+        return ResponseEntity
+                .ok()
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .build();
     }
