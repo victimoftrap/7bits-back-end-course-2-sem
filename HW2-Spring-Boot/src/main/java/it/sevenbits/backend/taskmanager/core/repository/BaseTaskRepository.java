@@ -2,7 +2,11 @@ package it.sevenbits.backend.taskmanager.core.repository;
 
 import it.sevenbits.backend.taskmanager.core.model.Task;
 
-import java.util.*;
+import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Collections;
 
 /**
  * Basic implementation of TaskRepository

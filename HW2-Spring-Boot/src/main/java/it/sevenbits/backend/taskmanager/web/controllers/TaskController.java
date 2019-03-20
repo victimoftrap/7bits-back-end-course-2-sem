@@ -5,6 +5,7 @@ import it.sevenbits.backend.taskmanager.core.repository.TaskRepository;
 import it.sevenbits.backend.taskmanager.core.service.IdValidationService;
 import it.sevenbits.backend.taskmanager.web.model.AddTaskRequest;
 
+import it.sevenbits.backend.taskmanager.web.model.UpdateTaskRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -97,7 +98,7 @@ public class TaskController {
      * @param old previous task value
      * @return new text for task
      */
-    private String updateTaskText(final Task upd, final Task old) {
+    private String updateTaskText(final UpdateTaskRequest upd, final Task old) {
         return upd.getText() == null ? old.getText() : upd.getText();
     }
 
@@ -108,7 +109,7 @@ public class TaskController {
      * @param old previous task value
      * @return new status for task
      */
-    private String updateTaskStatus(final Task upd, final Task old) {
+    private String updateTaskStatus(final UpdateTaskRequest upd, final Task old) {
         return upd.getStatus() == null ? old.getStatus() : upd.getStatus();
     }
 
@@ -125,7 +126,7 @@ public class TaskController {
             method = RequestMethod.GET
     )
     @ResponseBody
-    public ResponseEntity<Task> getTasksById(@PathVariable(value = "id") final String id) {
+    public ResponseEntity<Task> getTasksById(@PathVariable("id") final String id) {
         if (!idValidation.verify(id)) {
             return ResponseEntity
                     .badRequest()
@@ -157,12 +158,12 @@ public class TaskController {
      * * Code 404 - task by ID not found.
      */
     @RequestMapping(
-            value = "/{id",
+            value = "/{id}",
             method = RequestMethod.PATCH
     )
     @ResponseBody
-    public ResponseEntity<Void> updateTask(@PathVariable(value = "id") final String id,
-                                           @RequestBody @Valid final Task request) {
+    public ResponseEntity<Void> updateTask(@PathVariable("id") final String id,
+                                           @RequestBody @Valid final UpdateTaskRequest request) {
         if (!idValidation.verify(id)) {
             return ResponseEntity
                     .badRequest()
@@ -201,7 +202,7 @@ public class TaskController {
             method = RequestMethod.DELETE
     )
     @ResponseBody
-    public ResponseEntity<Void> deleteTask(@PathVariable(value = "id") final String id) {
+    public ResponseEntity<Void> deleteTask(@PathVariable("id") final String id) {
         if (!idValidation.verify(id)) {
             return ResponseEntity
                     .badRequest()
