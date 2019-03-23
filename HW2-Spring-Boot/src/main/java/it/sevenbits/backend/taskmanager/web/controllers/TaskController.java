@@ -26,7 +26,7 @@ import java.util.List;
  * Class-mediator that would return data from repository to user
  */
 @Controller
-@RequestMapping("/tasks")
+@RequestMapping(value = "/tasks")
 public class TaskController {
     private final TaskRepository repository;
     private IdValidationService idValidation = new IdValidationService();
@@ -38,6 +38,28 @@ public class TaskController {
      */
     public TaskController(final TaskRepository repository) {
         this.repository = repository;
+    }
+
+    /**
+     * Choose text value for updated task
+     *
+     * @param upd request data
+     * @param old previous task value
+     * @return new text for task
+     */
+    private String updateTaskText(final UpdateTaskRequest upd, final Task old) {
+        return upd.getText() == null ? old.getText() : upd.getText();
+    }
+
+    /**
+     * Choose status value for updated task
+     *
+     * @param upd request data
+     * @param old previous task value
+     * @return new status for task
+     */
+    private String updateTaskStatus(final UpdateTaskRequest upd, final Task old) {
+        return upd.getStatus() == null ? old.getStatus() : upd.getStatus();
     }
 
     /**
@@ -92,28 +114,6 @@ public class TaskController {
     }
 
     /**
-     * Choose text value for updated task
-     *
-     * @param upd request data
-     * @param old previous task value
-     * @return new text for task
-     */
-    private String updateTaskText(final UpdateTaskRequest upd, final Task old) {
-        return upd.getText() == null ? old.getText() : upd.getText();
-    }
-
-    /**
-     * Choose status value for updated task
-     *
-     * @param upd request data
-     * @param old previous task value
-     * @return new status for task
-     */
-    private String updateTaskStatus(final UpdateTaskRequest upd, final Task old) {
-        return upd.getStatus() == null ? old.getStatus() : upd.getStatus();
-    }
-
-    /**
      * Get task by his ID
      *
      * @param id ID of a task
@@ -129,8 +129,7 @@ public class TaskController {
     public ResponseEntity<Task> getTasksById(@PathVariable("id") final String id) {
         if (!idValidation.verify(id)) {
             return ResponseEntity
-                    .badRequest()
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .notFound()
                     .build();
         }
 
@@ -205,8 +204,7 @@ public class TaskController {
     public ResponseEntity<Void> deleteTask(@PathVariable("id") final String id) {
         if (!idValidation.verify(id)) {
             return ResponseEntity
-                    .badRequest()
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .notFound()
                     .build();
         }
 

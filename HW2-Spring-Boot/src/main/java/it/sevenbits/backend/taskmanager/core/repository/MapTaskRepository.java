@@ -11,7 +11,7 @@ import java.util.Collections;
 /**
  * Basic implementation of TaskRepository
  */
-public class BaseTaskRepository implements TaskRepository {
+public class MapTaskRepository implements TaskRepository {
     private Map<String, Task> tasks;
 
     /**
@@ -19,7 +19,7 @@ public class BaseTaskRepository implements TaskRepository {
      *
      * @param tasksContainer some map container for tasks
      */
-    public BaseTaskRepository(final Map<String, Task> tasksContainer) {
+    public MapTaskRepository(final Map<String, Task> tasksContainer) {
         tasks = tasksContainer;
     }
 
