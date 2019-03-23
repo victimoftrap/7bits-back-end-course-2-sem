@@ -24,6 +24,9 @@ public class Task {
     @SupportedStatus
     private final String status;
 
+    @NotBlank
+    private final String createdAt;
+
     /**
      * Create task
      *
@@ -34,10 +37,12 @@ public class Task {
     @JsonCreator
     public Task(@JsonProperty("id") final String id,
                 @JsonProperty("text") final String text,
-                @JsonProperty("status") final String status) {
+                @JsonProperty("status") final String status,
+                @JsonProperty("createdAt") final String createdAt) {
         this.id = id;
         this.text = text;
         this.status = status;
+        this.createdAt = createdAt;
     }
 
     /**
@@ -67,18 +72,32 @@ public class Task {
         return status;
     }
 
+    /**
+     * Get date of a task creation
+     *
+     * @return string with date
+     */
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Task task = (Task) o;
         return Objects.equals(id, task.id) &&
                 Objects.equals(text, task.text) &&
-                Objects.equals(status, task.status);
+                Objects.equals(status, task.status) &&
+                Objects.equals(createdAt, task.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, status);
+        return Objects.hash(id, text, status, createdAt);
     }
 }

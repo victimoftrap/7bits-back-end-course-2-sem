@@ -2,16 +2,19 @@ package it.sevenbits.backend.taskmanager.core.repository;
 
 import it.sevenbits.backend.taskmanager.core.model.Task;
 
-import java.util.UUID;
+import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Collections;
+import java.util.UUID;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 /**
  * Basic implementation of TaskRepository
  */
 public class MapTaskRepository implements TaskRepository {
+    private String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
     private Map<String, Task> tasks;
 
     /**
@@ -25,7 +28,10 @@ public class MapTaskRepository implements TaskRepository {
 
     @Override
     public Task createTask(final String text, final String status) {
-        Task newTask = new Task(UUID.randomUUID().toString(), text, status);
+        String id = UUID.randomUUID().toString();
+        String createdAt = new SimpleDateFormat(DATE_FORMAT).format(new Date());
+        Task newTask = new Task(id, text, status, createdAt);
+
         tasks.putIfAbsent(newTask.getId(), newTask);
         return newTask;
     }

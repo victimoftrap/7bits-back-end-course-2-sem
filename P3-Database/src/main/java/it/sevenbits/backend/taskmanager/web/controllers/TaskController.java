@@ -94,7 +94,6 @@ public class TaskController {
      */
     @RequestMapping(
             method = RequestMethod.POST,
-            headers = "content-type=application/json",
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
@@ -178,7 +177,12 @@ public class TaskController {
 
         String updText = updateTaskText(request, oldTask);
         String updStatus = updateTaskStatus(request, oldTask);
-        Task updated = new Task(oldTask.getId(), updText, updStatus);
+        Task updated = new Task(
+                oldTask.getId(),
+                updText,
+                updStatus,
+                oldTask.getCreatedAt()
+        );
         repository.updateTask(updated.getId(), updated);
 
         return ResponseEntity
