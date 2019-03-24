@@ -6,6 +6,7 @@ import it.sevenbits.backend.taskmanager.web.model.AddTaskRequest;
 import it.sevenbits.backend.taskmanager.web.model.UpdateTaskRequest;
 import it.sevenbits.backend.taskmanager.core.service.validation.IdValidationService;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
