@@ -43,14 +43,16 @@ public class DatabaseTaskRepository implements TaskRepository {
     @Override
     public List<Task> getTasks(final String status) {
         return jdbcOperations.query(
-                "SELECT id, text, status, createdAt FROM tasks",
+                "SELECT id, text, status, createdAt FROM tasks WHERE status=?",
                 (resultSet, i) -> {
                     String taskId = resultSet.getString(1);
                     String text = resultSet.getString(2);
                     String status1 = resultSet.getString(3);
                     String creationDate = resultSet.getString(4);
                     return new Task(taskId, text, status1, creationDate);
-                });
+                },
+                status
+        );
     }
 
     @Override
